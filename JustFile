@@ -1,5 +1,27 @@
 
 
+rust_tools := shell("rustc +nightly --print sysroot") + "/lib/rustlib/" + shell("rustc +nightly --print host-tuple") + "/bin"
+target_dir := "target/m68k-none-eabi/debug"
+
 # Compile this project
 compile:
     cargo +nightly build -Z build-std=core,alloc -Zjson-target-spec --target m68k-none-eabi.json
+
+
+# Build the coin flip example ROM
+build-coinflip:
+    just build-rom megacoinflip
+
+
+# Build the PONG example ROM
+build-pong:
+    just build-rom megapong
+
+
+# Rust builds the code; GNU M68k binutils provide the assembler and linker,
+# since Rust's bundled linker does not support M68k ELF.
+build-rom example:
+    cargo +nightly build -Z build-std=core,alloc -Zjson-target-spec --target m68k-none-eabi.json --package {{example}}
+    sed -E 's/;.*$//; s/bra #/bra /' examples/{{example}}/entry.S | m68k-elf-as --register-prefix-optional -m68000 -o {{target_dir}}/{{example}}.o -
+    m68k-elf-ld --gc-sections -e _start -o {{target_dir}}/{{example}}.elf -T megadrive.ld {{target_dir}}/{{example}}.o {{target_dir}}/lib{{example}}.a
+    {{rust_tools}}/llvm-objcopy -O binary {{target_dir}}/{{example}}.elf {{target_dir}}/{{example}}.md
