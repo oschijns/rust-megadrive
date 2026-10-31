@@ -82,15 +82,8 @@ impl Controllers {
         c2.set_pin_directions_raw(0x40, false);
         c2.set_pins(0x40);
 
-        let controllers = unsafe {
-            let mut c: [Option<ControllerState>; 2] = core::mem::MaybeUninit::uninit().assume_init();
-            c[0] = None;
-            c[1] = None;
-            c
-        };
-
         Controllers {
-            controllers,
+            controllers: [const { None }; 2],
         }
     }
 

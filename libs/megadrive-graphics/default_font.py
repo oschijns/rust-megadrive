@@ -1,4 +1,3 @@
-import math
 import os
 from typing import TextIO
 
@@ -70,12 +69,12 @@ def write_char(char_idx: int, font: ImageFont, rust_file: TextIO):
         # Step by two: two pixels are combined into one hex value
         for column in range(tile_width)[::2]:
             pixel1 = image.getpixel((column, row))
-            # Scale down the palette from 256 to 8 colors. Offset by 1 since color 0 is transparent.
-            pixel1 = math.floor((pixel1 + 1) / 32)
+            # Use palette index 1 for glyph pixels; index 0 stays transparent.
+            pixel1 = 1 if pixel1 >= 96 else 0
 
             # Add the second pixel
             pixel2 = image.getpixel((column + 1, row))
-            pixel2 = math.floor((pixel2 + 1) / 32)
+            pixel2 = 1 if pixel2 >= 96 else 0
 
             rust_file.write(f'0x{pixel1}{pixel2}, ')
 

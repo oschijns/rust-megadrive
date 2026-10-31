@@ -1,7 +1,5 @@
 #![no_std]
 
-use core::mem::MaybeUninit;
-
 use megadrive_sys::vdp::{Sprite, VDP};
 
 pub mod default_ascii {
@@ -21,7 +19,7 @@ impl Renderer {
     /// Allocate a new renderer.
     pub fn new() -> Renderer {
         Renderer {
-            sprites: unsafe { MaybeUninit::uninit().assume_init() },
+            sprites: core::array::from_fn(|_| Sprite::default()),
             num_sprites: 0,
         }
     }
@@ -45,7 +43,7 @@ impl Renderer {
             s.link = next;
         }
 
-        vdp.set_sprites(0, sprites);
+        vdp.set_sprites_iter(0, sprites.iter());
     }
 
     /// Add a sprite to the draw queue.

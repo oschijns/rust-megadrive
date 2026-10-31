@@ -1,68 +1,54 @@
 #![no_std]
 use core::ptr::{read_volatile, write_volatile};
 
-use megadrive_graphics::Renderer;
 use megadrive_input::{Controllers, Button};
 use megadrive_util::rng::PseudoRng;
-use megadrive_sys::vdp::VDP;
+use megadrive_sys::vdp::{TileFlags, VDP};
 use megadrive_graphics::default_ascii::DEFAULT_FONT_1X1;
 
 static mut NEW_FRAME: u16 = 0;
+const TEXT_START: u16 = 4 * 32 + 8;
+
+fn draw_text(vdp: &mut VDP, text: &str) {
+    let mut tiles = [TileFlags::default(); 16];
+    for (tile, byte) in tiles.iter_mut().zip(text.bytes()) {
+        *tile = TileFlags::for_tile(byte as u16 + 1, 0);
+    }
+
+    vdp.set_plane_a_tiles_iter(TEXT_START, tiles.iter());
+}
 
 #[unsafe(no_mangle)]
 pub fn main() -> ! {
-    let mut renderer = Renderer::new();
     let mut controllers = Controllers::new();
     let mut vdp = VDP::new();
 
     let mut rng = PseudoRng::from_seed(42);
 
-    let resolution = vdp.resolution();
-    let half_screen_width = resolution.0 >> 1;
-    let half_screen_height = resolution.1 >> 1;
-
-    let x_off = 104 + half_screen_width;
-    let y_off = 128 + half_screen_height;
-
     vdp.enable_interrupts(false, true, false);
+
+    DEFAULT_FONT_1X1.load(&mut vdp);
+    draw_text(&mut vdp, "Press A to flip");
     vdp.enable_display(true);
 
-    // Load the font tiles
-    DEFAULT_FONT_1X1.load(&mut vdp);
-
-    let mut roll = false;
+    let mut button_was_down = false;
 
     loop {
-        renderer.clear();
         controllers.update();
 
-        // Always roll: it updates the seed so that the outcome will be different every game
-        let random_number = rng.random();
-
-        // Do nothing if A button isn't pressed
-        if let Some(c) = controllers.controller_state(0) {
-            if c.down(Button::A) { roll = true; }
-        }
-
-        if roll == false {
-            let text = "Press A to flip";
-            DEFAULT_FONT_1X1.blit_text(&mut renderer, text, x_off, y_off);
-        } else {
-            // Reset for next
-            roll = false;
-
-            let flipped = random_number & 1; // mask with 1, so either 0 or 1
-            let heads_or_tails = match flipped {
-                0 => "Heads!",
-                _ => "Tails!"
+        let button_is_down = controllers
+            .controller_state(0)
+            .is_some_and(|controller| controller.down(Button::A));
+        if button_is_down && !button_was_down {
+            let result = if rng.random() & 1 == 0 {
+                "Heads!"
+            } else {
+                "Tails!"
             };
-
-            DEFAULT_FONT_1X1.blit_text(&mut renderer, heads_or_tails, x_off, y_off);
+            draw_text(&mut vdp, result);
         }
+        button_was_down = button_is_down;
 
-
-        renderer.render(&mut vdp);
-        // vsync
         wait_for_vblank();
     }
 }

@@ -1,10 +1,12 @@
 {
   "arch": "m68k",
+  "cpu": "M68000",
   "crt-static-respected": true,
   "data-layout": "E-m:e-p:32:16:32-i8:8:8-i16:16:16-i32:16:32-n8:16:32-a:0:16-S16",
   "dynamic-linking": true,
   "env": "none",
   "executables": true,
+  "features": "+isa-68000,-isa-68010,-isa-68020,-isa-68030,-isa-68040,-isa-68060",
   "has-rpath": true,
   "linker-is-gnu": true,
   "panic-strategy": "abort",

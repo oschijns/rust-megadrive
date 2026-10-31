@@ -11,7 +11,7 @@ pub struct Font {
 impl Font {
     /// Loads the font to the start index, using an already initialized visual display
     pub fn load(&self, vdp: &mut VDP) {
-        vdp.set_tiles(self.start_index, self.tile_data);
+        vdp.set_tiles_iter(self.start_index, self.tile_data.iter());
     }
 
     /// Displays text using renderer at position (x, y)

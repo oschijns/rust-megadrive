@@ -628,7 +628,10 @@ impl VDP {
     /// Set one of the 4 configurable palettes.
     pub fn set_palette(&mut self, index: u16, palette: &[u16; 16]) {
         assert!(index < 4, "only 4 palettes");
-        self.dma_upload_word_slice(AddrKind::CRAM, index << 5, palette);
+        self.set_address(AddrKind::CRAM, index << 5);
+        for colour in palette {
+            self.write_data(*colour);
+        }
     }
 
     /// Set the contents of some tiles in VRAM.
@@ -698,6 +701,21 @@ impl VDP {
     }
 
     /// Set the tile flags for plane A.
+    pub fn set_plane_a_tiles_iter<T>(&mut self, first_index: u16, values: impl Iterator<Item=T>)
+        where T: Deref<Target=TileFlags>
+    {
+        self.set_address(AddrKind::VRAM,
+                         (first_index << 1) + self.plane_a_base);
+
+        for value in values {
+            unsafe {
+                let src: *const u16 = core::mem::transmute(value.deref());
+                write_volatile(REG_VDP_DATA16, *src);
+            }
+        }
+    }
+
+    /// Set the tile flags for plane A using DMA.
     #[inline(never)]
     pub fn set_plane_a_tiles(&mut self, first_index: u16, values: &[TileFlags]) {
         self.dma_upload_word_slice(AddrKind::VRAM,
