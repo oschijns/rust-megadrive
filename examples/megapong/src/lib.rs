@@ -9,7 +9,7 @@ use megadrive_graphics::Renderer;
 
 static mut NEW_FRAME: u16 = 0;
 
-extern "C" {
+unsafe extern "C" {
     fn wait_for_interrupt();
 }
 
@@ -190,7 +190,7 @@ fn upload_graphics(vdp: &mut VDP) {
     vdp.set_tiles(1, TILE_DATA);
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub fn main() -> ! {
     let fm = FM::new();
     let mut vdp = VDP::new();
@@ -365,20 +365,19 @@ pub fn main() -> ! {
 
 fn wait_for_vblank() {
     unsafe {
-        while read_volatile(&NEW_FRAME) == 0 {
+        while read_volatile(&raw const NEW_FRAME) == 0 {
             wait_for_interrupt();
         }
         NEW_FRAME = 0;
     }
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 fn vblank() {
-    unsafe { write_volatile(&mut NEW_FRAME, 1) };
+    unsafe { write_volatile(&raw mut NEW_FRAME, 1) };
 }
 
 #[panic_handler]
-#[no_mangle]
 fn panic(_info: &PanicInfo) -> ! {
     loop {}
 }

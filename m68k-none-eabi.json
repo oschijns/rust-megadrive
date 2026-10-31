@@ -1,15 +1,14 @@
 {
   "arch": "m68k",
   "crt-static-respected": true,
-  "data-layout": "E-m:e-p:32:32-i8:8:8-i16:16:16-i32:32:32-n8:16:32-a:0:32-S16",
+  "data-layout": "E-m:e-p:32:16:32-i8:8:8-i16:16:16-i32:16:32-n8:16:32-a:0:16-S16",
   "dynamic-linking": true,
   "env": "none",
   "executables": true,
-  "has-elf-tls": true,
   "has-rpath": true,
   "linker-is-gnu": true,
   "panic-strategy": "abort",
-  "llvm-target": "m68k-none-eabi",
+  "llvm-target": "m68k-unknown-none-elf",
   "max-atomic-width": 0,
   "os": "none",
   "position-independent-executables": false,
@@ -24,5 +23,5 @@
   "relro-level": "full",
   "target-endian": "big",
   "target-family": "unix",
-  "target-pointer-width": "32"
+  "target-pointer-width": 32
 }

@@ -1,9 +1,12 @@
 [package]
 name = "megadrive-util"
 description = "Miscellaneous functions, structures and traits useful for development on the Sega Mega Drive (Genesis)"
-version = "0.1.0"
-authors = ["reinvantveer <rein@vantveer.me>", "Ricky Taylor <rickytaylor26@gmail.com>"]
-edition = "2018"
+version = "0.1.1"
+authors = [
+    "reinvantveer <rein@vantveer.me>", 
+    "Ricky Taylor <rickytaylor26@gmail.com>"
+]
+edition = "2024"
 license = "MIT"
 homepage = "https://github.com/ricky26/rust-mega-drive"
 repository = "https://github.com/ricky26/rust-mega-drive"

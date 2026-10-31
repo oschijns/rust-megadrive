@@ -1,9 +1,9 @@
 [package]
 name = "megadrive-input"
 description = "Higher-level support for input devices on the Sega Mega Drive (Genesis)"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Ricky Taylor <rickytaylor26@gmail.com>"]
-edition = "2018"
+edition = "2024"
 license = "MIT"
 homepage = "https://github.com/ricky26/rust-mega-drive"
 repository = "https://github.com/ricky26/rust-mega-drive"

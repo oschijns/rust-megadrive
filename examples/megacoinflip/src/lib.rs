@@ -9,7 +9,7 @@ use megadrive_graphics::default_ascii::DEFAULT_FONT_1X1;
 
 static mut NEW_FRAME: u16 = 0;
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub fn main() -> ! {
     let mut renderer = Renderer::new();
     let mut controllers = Controllers::new();
@@ -67,18 +67,18 @@ pub fn main() -> ! {
     }
 }
 
-extern "C" { fn wait_for_interrupt(); }
+unsafe extern "C" { fn wait_for_interrupt(); }
 
 fn wait_for_vblank() {
     unsafe {
-        while read_volatile(&NEW_FRAME) == 0 {
+        while read_volatile(&raw const NEW_FRAME) == 0 {
             wait_for_interrupt();
         }
         NEW_FRAME = 0;
     }
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 fn vblank() {
-    unsafe { write_volatile(&mut NEW_FRAME, 1) };
+    unsafe { write_volatile(&raw mut NEW_FRAME, 1) };
 }

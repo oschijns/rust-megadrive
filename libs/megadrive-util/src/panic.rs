@@ -8,7 +8,6 @@ use megadrive_graphics::default_ascii::DEFAULT_FONT_1X1;
 static mut NEW_FRAME: u16 = 0;
 
 #[panic_handler]
-#[no_mangle]
 fn panic(_info: &PanicInfo) -> ! {
     // Since we don't know where the panic occurred, we can't assume the vdp and renderer are
     // initialized yet
@@ -43,13 +42,13 @@ fn panic(_info: &PanicInfo) -> ! {
     }
 }
 
-extern "C" {
+unsafe extern "C" {
     fn wait_for_interrupt();
 }
 
 fn wait_for_vblank() {
     unsafe {
-        while read_volatile(&NEW_FRAME) == 0 {
+        while read_volatile(&raw const NEW_FRAME) == 0 {
             wait_for_interrupt();
         }
         NEW_FRAME = 0;

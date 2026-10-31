@@ -1,0 +1,5 @@
+
+
+# Compile this project
+compile:
+    cargo +nightly build -Z build-std=core,alloc -Zjson-target-spec --target m68k-none-eabi.json

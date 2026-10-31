@@ -1,9 +1,9 @@
 [package]
 name = "megadrive-sys"
 description = "Bindings to the Sega Mega Drive (Genesis) hardware."
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Ricky Taylor <rickytaylor26@gmail.com>"]
-edition = "2018"
+edition = "2024"
 license = "MIT"
 readme = "../../README.md"
 homepage = "https://github.com/ricky26/rust-mega-drive"

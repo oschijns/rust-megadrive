@@ -1,0 +1,9 @@
+[build]
+
+[target.m68k-unknown-none-elf]
+linker = "m68k-linux-gnu-ld"
+rustflags = ["-Clink-args=-Tmegadrive.ld", "-Clink-args=-nostdlib"]
+
+[unstable]
+unstable-options = true
+build-std = ["panic_abort", "core"]

@@ -1,11 +1,11 @@
 [workspace]
-
+resolver = "3"
 members = [
     "libs/megadrive-sys",
     "libs/megadrive-input",
     "libs/megadrive-graphics",
     "libs/megadrive-util",
-    "tools/cargo-megadrive",
+    #"tools/cargo-megadrive",
     "examples/megapong",
     "examples/megacoinflip",
 ]

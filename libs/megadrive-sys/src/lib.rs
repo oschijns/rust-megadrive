@@ -8,7 +8,7 @@ pub mod ports;
 pub mod fm;
 pub mod psg;
 
-extern "C" {
+unsafe extern "C" {
     static _data_src: *const u32;
     static _data_start: *mut u32;
     static _data_end: *mut u32;
@@ -18,7 +18,7 @@ extern "C" {
     static _heap_end: *mut u8;
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 fn _init_runtime() {
     // Implement SEGA copy protection.
     init_tmss();
